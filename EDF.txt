@@ -1,0 +1,52 @@
+import java.util.*;
+
+class Process {
+    String name;
+    int period;
+    int processingTime;
+    int deadline;
+
+    public Process(String name, int period, int processingTime) {
+        this.name = name;
+        this.period = period;
+        this.processingTime = processingTime;
+        this.deadline = period; 
+    }
+}
+
+public class EDF {
+    public static void main(String[] args) {
+        Process p1 = new Process("P1", 50, 25);
+        Process p2 = new Process("P2", 75, 30);
+        Process p3 = new Process("P3", 40, 15);
+        Process p4 = new Process("P4", 60, 20);
+        Process p5 = new Process("P5", 80, 35);
+
+        int currentTime = 0;
+
+        while (currentTime < 200) { 
+            Process nextProcess = getNextProcess(p1, p2, p3, p4, p5);
+
+            if (nextProcess != null) {
+                System.out.println("Time " + currentTime + ": " + nextProcess.name + " executes.");
+                currentTime += nextProcess.processingTime;
+                nextProcess.deadline += nextProcess.period; 
+            } else {
+                // No process to execute wait for the next event 
+                currentTime++;
+            }
+        }
+    }
+
+    public static Process getNextProcess(Process... processes) {
+        Process nextProcess = null;
+
+        for (Process process : processes) {
+            if (nextProcess == null || process.deadline <= nextProcess.deadline) {
+                nextProcess = process;
+            }
+        }
+
+        return nextProcess;
+    }
+}
